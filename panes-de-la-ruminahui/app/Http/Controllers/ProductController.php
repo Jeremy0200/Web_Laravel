@@ -21,10 +21,16 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+        ]);
+
+        $products = Product::create($request->all());
+        return response()->json($products, 201);
     }
+
 
     public function show(string $id)
     {
@@ -36,6 +42,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $product = Product::find($id);
+
+        if ($product) {
+            return response()->json(
+                ['message' => 'Product not found'],
+                404
+            );
+        }
         //
     }
 
